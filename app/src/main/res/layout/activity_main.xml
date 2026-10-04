@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="16dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="24dp">
+
+        <!-- 헤더: 앱 이름 + GPS 상태 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-black"
+                android:text="RunBeat"
+                android:textColor="@color/brand"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/tvGps"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_pill"
+                android:drawableStart="@drawable/dot"
+                android:drawablePadding="6dp"
+                android:fontFamily="sans-serif-medium"
+                android:paddingStart="12dp"
+                android:paddingTop="6dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="6dp"
+                android:text="대기 중"
+                android:textColor="@color/sub"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <!-- 모드 선택 (러닝 중에는 숨김) -->
+        <LinearLayout
+            android:id="@+id/modeRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:orientation="horizontal">
+
+            <TextView android:id="@+id/btnModeFree" style="@style/Chip" android:layout_height="48dp" android:text="자유 달리기" />
+            <TextView android:id="@+id/btnModeCourse" style="@style/Chip" android:layout_height="48dp" android:text="코스 달리기" />
+        </LinearLayout>
+
+        <!-- 선택한 코스 (코스 달리기 모드 + 러닝 전에만 보임) -->
+        <LinearLayout
+            android:id="@+id/cardCourse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_card_click"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="선택한 코스"
+                    android:textColor="@color/sub"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tvCourseName"
+                    android:layout_width="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:textColor="@color/text"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tvCourseSummary"
+                    android:layout_width="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="@color/sub"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="바꾸기 ›"
+                android:textColor="@color/brand"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- 인터벌 진행 (코스 달리기 + 러닝 중에만 보임) -->
+        <LinearLayout
+            android:id="@+id/cardInterval"
+            style="@style/Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvSegLabel"
+                    android:layout_width="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_pill"
+                    android:fontFamily="sans-serif-medium"
+                    android:paddingStart="12dp"
+                    android:paddingTop="5dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="5dp"
+                    android:textSize="15sp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/tvCourseProgress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/sub"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/progressCourse"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:layout_marginTop="12dp"
+                android:max="1000"
+                android:progressDrawable="@drawable/progress_course" />
+
+            <TextView
+                android:id="@+id/tvSegRemain"
+                android:layout_width="match_parent"
+                android:layout_height="84dp"
+                android:layout_marginTop="10dp"
+                android:autoSizeMaxTextSize="72sp"
+                android:autoSizeMinTextSize="28sp"
+                android:autoSizeTextType="uniform"
+                android:maxLines="1"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:text="0:00"
+                android:textColor="@color/brand"
+                android:textSize="72sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="이번 구간 남은 시간"
+                android:textColor="@color/sub"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/tvNext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_input"
+                android:gravity="center"
+                android:padding="10dp"
+                android:textColor="@color/text"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <!-- 일시정지 안내 -->
+        <TextView
+            android:id="@+id/tvPaused"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_pill"
+            android:backgroundTint="@color/warn"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:padding="12dp"
+            android:text="일시정지됨"
+            android:textColor="#2A1E00"
+            android:textSize="15sp" />
+
+        <!-- 메인 카드: 시간 + 거리 -->
+        <LinearLayout
+            style="@style/Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingTop="24dp"
+            android:paddingBottom="24dp">
+
+            <TextView
+                android:id="@+id/tvTime"
+                android:layout_width="match_parent"
+                android:layout_height="88dp"
+                android:autoSizeMaxTextSize="76sp"
+                android:autoSizeMinTextSize="28sp"
+                android:autoSizeTextType="uniform"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:text="00:00"
+                android:textColor="@color/text"
+                android:textSize="76sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:text="경과 시간"
+                android:textColor="@color/sub"
+                android:textSize="13sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="18dp"
+                android:background="@color/card_stroke" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="bottom"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvDistance"
+                    android:layout_width="wrap_content"
+                    android:maxLines="1"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-condensed"
+                    android:includeFontPadding="false"
+                    android:text="0.00"
+                    android:textColor="@color/brand"
+                    android:textSize="56sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginBottom="6dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="km"
+                    android:textColor="@color/sub"
+                    android:textSize="20sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 2×2 수치 카드 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <LinearLayout style="@style/StatCard" android:layout_marginEnd="5dp">
+                <TextView style="@style/StatLabel" android:text="현재 페이스" />
+                <TextView android:id="@+id/tvPace" style="@style/StatValue" android:text="-'--&quot;" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/StatCard" android:layout_marginStart="5dp">
+                <TextView style="@style/StatLabel" android:text="평균 페이스" />
+                <TextView android:id="@+id/tvAvgPace" style="@style/StatValue" android:text="-'--&quot;" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <LinearLayout style="@style/StatCard" android:layout_marginEnd="5dp">
+                <TextView style="@style/StatLabel" android:text="케이던스 (spm)" />
+                <TextView android:id="@+id/tvCadence" style="@style/StatValue" android:text="--" />
+                <TextView
+                    android:id="@+id/tvSteps"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="0 걸음"
+                    android:textColor="@color/sub"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/StatCard" android:layout_marginStart="5dp">
+                <TextView style="@style/StatLabel" android:text="칼로리 (kcal)" />
+                <TextView android:id="@+id/tvKcal" style="@style/StatValue" android:text="0" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 메트로놈 카드 -->
+        <LinearLayout
+            style="@style/Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="메트로놈"
+                    android:textColor="@color/text"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/tvBpm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="꺼짐"
+                    android:textColor="@color/brand"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+
+                <TextView android:id="@+id/btnBpmOff" style="@style/Chip" android:text="끄기" />
+                <TextView android:id="@+id/btnBpm160" style="@style/Chip" android:text="160" />
+                <TextView android:id="@+id/btnBpm170" style="@style/Chip" android:text="170" />
+                <TextView android:id="@+id/btnBpm180" style="@style/Chip" android:text="180" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <TextView android:id="@+id/btnBpmMinus5" style="@style/ChipSmall" android:text="−5" />
+                <TextView android:id="@+id/btnBpmMinus" style="@style/ChipSmall" android:text="−1" />
+                <TextView android:id="@+id/btnBpmPlus" style="@style/ChipSmall" android:text="+1" />
+                <TextView android:id="@+id/btnBpmPlus5" style="@style/ChipSmall" android:text="+5" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvMetroNote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="코스 달리기에서는 달리기 구간에서만 울려요"
+                android:textColor="@color/sub"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <!-- 설정 카드 (러닝 중에는 숨김) -->
+        <LinearLayout
+            android:id="@+id/cardSettings"
+            style="@style/Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="자동 일시정지"
+                        android:textColor="@color/text"
+                        android:textSize="17sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="멈추면 기록과 타이머가 함께 멈춰요 · 대회 땐 끄기"
+                        android:textColor="@color/sub"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <Switch
+                    android:id="@+id/switchAutoPause"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="14dp"
+                android:background="@color/card_stroke" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="체중"
+                        android:textColor="@color/text"
+                        android:textSize="17sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="칼로리 계산에 사용돼요"
+                        android:textColor="@color/sub"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/etWeight"
+                    android:layout_width="80dp"
+                    android:layout_height="44dp"
+                    android:background="@drawable/bg_input"
+                    android:gravity="center"
+                    android:inputType="numberDecimal"
+                    android:textColor="@color/text"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="kg"
+                    android:textColor="@color/sub"
+                    android:textSize="15sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 시작 / 종료 -->
+        <TextView
+            android:id="@+id/btnStartStop"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_btn_start"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="sans-serif-black"
+            android:gravity="center"
+            android:text="시작"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp" />
+
+        <!-- 러닝 중 버튼: 일시정지/재개 · 건너뛰기(코스) · 종료 -->
+        <LinearLayout
+            android:id="@+id/runControls"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/btnPause"
+                android:maxLines="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1.3"
+                android:background="@drawable/bg_btn_start"
+                android:clickable="true"
+                android:focusable="true"
+                android:fontFamily="sans-serif-black"
+                android:gravity="center"
+                android:text="일시정지"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/btnSkip"
+                style="@style/GhostButton"
+                android:layout_height="match_parent"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:text="건너뛰기" />
+
+            <TextView
+                android:id="@+id/btnStop"
+                android:maxLines="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_btn_stop"
+                android:clickable="true"
+                android:focusable="true"
+                android:fontFamily="sans-serif-black"
+                android:gravity="center"
+                android:text="종료"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/bottomRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/btnHistory"
+                style="@style/GhostButton"
+                android:layout_marginEnd="5dp"
+                android:drawableStart="@drawable/ic_history"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:text="러닝 기록" />
+
+            <TextView
+                android:id="@+id/btnBattery"
+                style="@style/GhostButton"
+                android:layout_marginStart="5dp"
+                android:drawableStart="@drawable/ic_battery"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:text="배터리 설정" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

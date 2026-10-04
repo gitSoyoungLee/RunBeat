@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg">#0E0F12</color>
+    <color name="card">#1A1C21</color>
+    <color name="card_stroke">#2A2D35</color>
+    <color name="text">#F5F5F7</color>
+    <color name="sub">#8A8F98</color>
+    <color name="brand">#FF6B2C</color>
+    <color name="brand_soft">#33FF6B2C</color>
+    <color name="stop">#FF4D4F</color>
+    <color name="stop_soft">#26FF4D4F</color>
+    <color name="good">#3DDC97</color>
+    <color name="warn">#FFC145</color>
+    <color name="chart">#5B8DEF</color>
+</resources>

@@ -1,0 +1,5 @@
+# 줄바꿈 통일 (Windows/Mac/Linux 어디서 받아도 같은 파일로 보이게)
+* text=auto
+gradlew text eol=lf
+*.bat text eol=crlf
+*.jar binary
