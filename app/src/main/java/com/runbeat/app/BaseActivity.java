@@ -2,7 +2,6 @@ package com.runbeat.app;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Insets;
@@ -47,7 +46,7 @@ public abstract class BaseActivity extends Activity {
      */
     @Override
     protected void attachBaseContext(Context base) {
-        appliedTheme = readThemeSetting(base);
+        appliedTheme = AppSettings.of(base).theme();
         Configuration current = base.getResources().getConfiguration();
         int uiMode = ThemeMode.applyToUiMode(appliedTheme, current.uiMode);
         if (uiMode == current.uiMode) {
@@ -67,12 +66,7 @@ public abstract class BaseActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (!readThemeSetting(this).equals(appliedTheme)) recreate();
-    }
-
-    private static String readThemeSetting(Context c) {
-        SharedPreferences prefs = c.getSharedPreferences(MainActivity.PREFS, Context.MODE_PRIVATE);
-        return ThemeMode.normalize(prefs.getString(ThemeMode.KEY, ThemeMode.DEFAULT));
+        if (!AppSettings.of(this).theme().equals(appliedTheme)) recreate();
     }
 
     @Override

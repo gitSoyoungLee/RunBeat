@@ -3,7 +3,6 @@ package com.runbeat.app;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.location.LocationManager;
@@ -29,8 +28,7 @@ import java.util.Locale;
 
 public class MainActivity extends BaseActivity {
 
-    public static final String PREFS = "runbeat";
-    private static final int REQ_PERMS = 1;
+   private static final int REQ_PERMS = 1;
     private static final int[] CHIP_BPMS = {0, 160, 170, 180};
 
     private TextView tvTime, tvDistance, tvPace, tvAvgPace, tvCadence, tvKcal, tvSteps, tvGps, tvBpm;
@@ -40,7 +38,7 @@ public class MainActivity extends BaseActivity {
     private ProgressBar progressCourse;
     private TextView[] bpmChips;
 
-    private SharedPreferences prefs;
+    private AppSettings settings;
     private boolean courseModeSelected; // 홈에서 고른 모드 (러닝 전)
     private boolean pendingStart;
     private boolean waitingForSave;
@@ -96,12 +94,12 @@ public class MainActivity extends BaseActivity {
         bpmChips = new TextView[]{findViewById(R.id.btnBpmOff), findViewById(R.id.btnBpm160),
                 findViewById(R.id.btnBpm170), findViewById(R.id.btnBpm180)};
 
-        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
-        courseModeSelected = "course".equals(prefs.getString("mode", "free"));
+        settings = AppSettings.of(this);
+        courseModeSelected = settings.courseMode();
         if (!RunState.running) {
-            RunState.targetBpm = prefs.getInt("bpm", 0);
-            RunState.weightKg = prefs.getFloat("weight", 60f);
-            RunState.autoPauseEnabled = prefs.getBoolean("autoPause", true);
+            RunState.targetBpm = settings.bpm();
+            RunState.weightKg = settings.weightKg();
+            RunState.autoPauseEnabled = settings.autoPause();
         }
 
         // 모드 선택
@@ -125,7 +123,7 @@ public class MainActivity extends BaseActivity {
         sw.setChecked(RunState.autoPauseEnabled);
         sw.setOnCheckedChangeListener((b, checked) -> {
             RunState.autoPauseEnabled = checked;
-            prefs.edit().putBoolean("autoPause", checked).apply();
+            settings.setAutoPause(checked);
         });
 
         // 체중
@@ -138,10 +136,7 @@ public class MainActivity extends BaseActivity {
             public void afterTextChanged(Editable s) {
                 try {
                     float w = Float.parseFloat(s.toString());
-                    if (w >= 20 && w <= 250) {
-                        RunState.weightKg = w;
-                        prefs.edit().putFloat("weight", w).apply();
-                    }
+                    if (settings.setWeightKg(w)) RunState.weightKg = w; // 범위 밖이면 저장 안 함
                 } catch (NumberFormatException ignored) { }
             }
         });
@@ -179,7 +174,7 @@ public class MainActivity extends BaseActivity {
 
     private void setMode(boolean course) {
         courseModeSelected = course;
-        prefs.edit().putString("mode", course ? "course" : "free").apply();
+        settings.setCourseMode(course);
         refresh();
     }
 
@@ -268,9 +263,7 @@ public class MainActivity extends BaseActivity {
     // ───────────────────────── 메트로놈 ─────────────────────────
 
     private void setBpm(int bpm) {
-        if (bpm != 0) bpm = Math.max(120, Math.min(220, bpm));
-        RunState.targetBpm = bpm;
-        prefs.edit().putInt("bpm", bpm).apply();
+        RunState.targetBpm = settings.setBpm(bpm); // 120~220 범위로 맞춘 값
         updateBpmLabel();
     }
 

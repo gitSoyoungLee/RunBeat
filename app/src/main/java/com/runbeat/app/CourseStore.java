@@ -80,14 +80,12 @@ public final class CourseStore {
 
     /** 선택된 코스. 아무것도 없으면 첫 번째 프리셋 */
     public static Course selected(Context c) {
-        Course k = find(c, c.getSharedPreferences(MainActivity.PREFS, Context.MODE_PRIVATE)
-                .getString("courseId", null));
+        Course k = find(c, AppSettings.of(c).courseId());
         return k != null ? k : Course.presets().get(0);
     }
 
     public static void select(Context c, String id) {
-        c.getSharedPreferences(MainActivity.PREFS, Context.MODE_PRIVATE)
-                .edit().putString("courseId", id).apply();
+        AppSettings.of(c).setCourseId(id);
     }
 
     public static final String DEFAULT_NAME = "커스텀 코스";
