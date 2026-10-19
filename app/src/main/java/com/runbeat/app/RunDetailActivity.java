@@ -69,6 +69,54 @@ public class RunDetailActivity extends BaseActivity {
         setupSplits(r, bestMs);
 
         findViewById(R.id.btnDelete).setOnClickListener(v -> confirmDelete());
+        findViewById(R.id.btnSaveImage).setOnClickListener(v -> saveImage());
+    }
+
+    // ───────────────────────── 이미지로 저장 ─────────────────────────
+
+    private static final int REQ_STORAGE = 10;
+    private boolean saving;
+
+    private void saveImage() {
+        if (saving) return; // 버튼 연타 방지
+        if (ImageSaver.needsPermission()
+                && checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQ_STORAGE);
+            return;
+        }
+        View content = findViewById(R.id.detailContent);
+        View actions = findViewById(R.id.actions);
+        // 버튼 영역 바로 위까지 = 요약 · 지도 · 차트 · 구간표 전부
+        android.graphics.Bitmap bmp = ViewCapture.capture(content, actions.getTop(), getColor(R.color.bg));
+        if (bmp == null) {
+            Toast.makeText(this, "이미지를 만들지 못했어요", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        saving = true;
+        Toast.makeText(this, "저장하는 중…", Toast.LENGTH_SHORT).show();
+        String name = ImageSaver.fileName(record.startTime);
+        // PNG로 압축하는 데 시간이 걸리므로 화면이 멈추지 않게 별도 스레드에서
+        new Thread(() -> {
+            boolean ok = ImageSaver.save(getApplicationContext(), bmp, name);
+            bmp.recycle();
+            runOnUiThread(() -> {
+                saving = false;
+                Toast.makeText(this, ok ? "갤러리 RunBeat 앨범에 저장했어요" : "저장하지 못했어요",
+                        Toast.LENGTH_LONG).show();
+            });
+        }, "save-image").start();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode != REQ_STORAGE) return;
+        if (grantResults.length > 0 && grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            saveImage();
+        } else {
+            Toast.makeText(this, "저장 권한이 있어야 갤러리에 저장할 수 있어요", Toast.LENGTH_LONG).show();
+        }
     }
 
     // ───────────────────────── 삭제 ─────────────────────────
