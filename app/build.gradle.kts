@@ -29,4 +29,7 @@ android {
 dependencies {
     // 지도(OpenStreetMap) - API 키 없이 사용 가능
     implementation("org.osmdroid:osmdroid-android:6.1.20")
+
+    // 단위 테스트(기기 없이 컴퓨터에서 실행) - src/test/java
+    testImplementation("junit:junit:4.13.2")
 }

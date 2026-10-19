@@ -2,7 +2,6 @@ package com.runbeat.app;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.util.AttributeSet;
@@ -22,14 +21,19 @@ public class PaceChartView extends View {
     private final Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint avgPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final float density;
+    private final int brandColor;
+    private final int chartColor;
 
     public PaceChartView(Context context, AttributeSet attrs) {
         super(context, attrs);
         density = getResources().getDisplayMetrics().density;
-        textPaint.setColor(Color.parseColor("#8A8F98"));
+        // 색은 리소스에서 읽어야 라이트/다크 테마에 따라 바뀐다
+        brandColor = context.getColor(R.color.brand);
+        chartColor = context.getColor(R.color.chart);
+        textPaint.setColor(context.getColor(R.color.sub));
         textPaint.setTextSize(11 * density);
         textPaint.setTextAlign(Paint.Align.CENTER);
-        avgPaint.setColor(Color.parseColor("#66F5F5F7"));
+        avgPaint.setColor(context.getColor(R.color.chart_avg));
         avgPaint.setStrokeWidth(1.5f * density);
         avgPaint.setStyle(Paint.Style.STROKE);
         avgPaint.setPathEffect(new DashPathEffect(new float[]{8 * density, 6 * density}, 0));
@@ -76,7 +80,7 @@ public class PaceChartView extends View {
             float sp = paces[i] > 0 ? 1000f / paces[i] : 0;
             float barH = sp > 0 ? Math.max((sp - base) / range * chartH, 3 * density) : 0;
             float cx = slot * i + slot / 2;
-            barPaint.setColor(i == fastest ? Color.parseColor("#FF6B2C") : Color.parseColor("#5B8DEF"));
+            barPaint.setColor(i == fastest ? brandColor : chartColor);
             float rad = Math.min(barW / 2, 6 * density);
             canvas.drawRoundRect(cx - barW / 2, bottom - barH, cx + barW / 2, bottom, rad, rad, barPaint);
 

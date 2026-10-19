@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ripple xmlns:android="http://schemas.android.com/apk/res/android" android:color="#33FFFFFF">
+<ripple xmlns:android="http://schemas.android.com/apk/res/android" android:color="@color/ripple_strong">
     <item>
         <selector>
             <item android:state_selected="true">
@@ -10,7 +10,7 @@
             </item>
             <item>
                 <shape android:shape="rectangle">
-                    <solid android:color="#24272E" />
+                    <solid android:color="@color/field" />
                     <corners android:radius="22dp" />
                 </shape>
             </item>

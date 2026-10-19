@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 라이트 테마 색 (기본값). 다크 테마 색은 values-night/colors.xml -->
 <resources>
-    <color name="bg">#0E0F12</color>
-    <color name="card">#1A1C21</color>
-    <color name="card_stroke">#2A2D35</color>
-    <color name="text">#F5F5F7</color>
-    <color name="sub">#8A8F98</color>
-    <color name="brand">#FF6B2C</color>
-    <color name="brand_soft">#33FF6B2C</color>
-    <color name="stop">#FF4D4F</color>
-    <color name="stop_soft">#26FF4D4F</color>
-    <color name="good">#3DDC97</color>
-    <color name="warn">#FFC145</color>
-    <color name="chart">#5B8DEF</color>
+    <color name="bg">#F4F5F7</color>
+    <color name="card">#FFFFFF</color>
+    <color name="card_stroke">#E2E5EA</color>
+    <color name="text">#16181C</color>
+    <color name="sub">#5F6672</color>
+    <color name="brand">#F2601F</color>
+    <color name="brand_soft">#33F2601F</color>
+    <color name="stop">#D42F33</color>
+    <color name="stop_soft">#1AD42F33</color>
+    <color name="good">#17A86B</color>
+    <color name="warn">#B98500</color>
+    <color name="chart">#3E72DB</color>
+    <!-- 아래는 코드·드로어블에 직접 박혀 있던 색을 이름으로 옮긴 것 -->
+    <color name="on_brand">#FFFFFF</color>        <!-- 주황/빨강 버튼 위 글자 -->
+    <color name="on_warn">#2A1E00</color>         <!-- 노란 일시정지 배너 위 글자 -->
+    <color name="field">#EDEFF3</color>           <!-- 입력칸·칩 배경 -->
+    <color name="block_bg">#14F2601F</color>      <!-- 반복 블록 배경 -->
+    <color name="chart_avg">#66363A42</color>     <!-- 차트 평균 점선 -->
+    <color name="ripple">#14000000</color>        <!-- 눌렀을 때 물결 -->
+    <color name="ripple_strong">#26000000</color>
+    <color name="ripple_danger">#26D42F33</color>
 </resources>
