@@ -12,12 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.osmdroid.config.Configuration;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.util.BoundingBox;
-import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.Polyline;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +29,7 @@ public class RunDetailActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // osmdroid(OpenStreetMap)는 지도 그리기 전에 앱 식별값을 설정해야 한다
-        Configuration.getInstance().setUserAgentValue(getPackageName());
+        RouteMap.init(this);
         setContentView(R.layout.activity_detail);
         setTitle("러닝 상세");
 
@@ -138,40 +132,19 @@ public class RunDetailActivity extends BaseActivity {
         });
         frame.setClipToOutline(true);
 
-        map = findViewById(R.id.map);
-        map.setTileSource(TileSourceFactory.MAPNIK);
         // 상세 화면의 지도는 "그림"처럼 고정한다.
         // 예전에는 지도가 손가락을 독차지(requestDisallowInterceptTouchEvent)해서
         // 갤럭시 스크롤 캡처가 페이지 대신 지도를 움직이는 문제가 있었다.
         // 이제 지도 위에 투명한 덮개(mapCover)가 터치를 받으므로, 위아래 드래그는 항상 페이지가 스크롤된다.
-        map.setMultiTouchControls(false);
-        map.getZoomController().setVisibility(
-                org.osmdroid.views.CustomZoomButtonsController.Visibility.NEVER);
+        map = findViewById(R.id.map);
+        RouteMap.show(this, map, r.route, false);
 
-        List<GeoPoint> pts = new ArrayList<>();
-        for (int i = 0; i + 1 < r.route.length; i += 2) {
-            pts.add(new GeoPoint(r.route[i], r.route[i + 1]));
-        }
-        if (pts.isEmpty()) {
-            map.getController().setZoom(15.0);
-            map.getController().setCenter(new GeoPoint(37.5665, 126.9780));
-            return;
-        }
-
-        Polyline line = new Polyline(map);
-        line.setPoints(pts);
-        line.getOutlinePaint().setColor(getColor(R.color.brand));
-        line.getOutlinePaint().setStrokeWidth(dp(5));
-        map.getOverlays().add(line);
-
-        if (pts.size() < 2) {
-            map.getController().setZoom(17.0);
-            map.getController().setCenter(pts.get(0));
-        } else {
-            BoundingBox box = BoundingBox.fromGeoPoints(pts);
-            map.addOnFirstLayoutListener((v, left, top, right, bottom) ->
-                    map.zoomToBoundingBox(box, false, dp(32)));
-        }
+        // 덮개를 "톡" 누르면 움직일 수 있는 전체 화면 지도로
+        findViewById(R.id.mapCover).setOnClickListener(v -> {
+            android.content.Intent i = new android.content.Intent(this, MapActivity.class);
+            i.putExtra(MapActivity.EXTRA_ID, r.id);
+            startActivity(i);
+        });
     }
 
     // ───────────────────────── 구간표 + 차트 ─────────────────────────
