@@ -43,6 +43,8 @@
 
 - **브랜치 전략**: `main`에서 기능별 브랜치 생성 → 작은 단위로 여러 번 커밋 → 끝나면 `main`에 `git merge --no-ff`로 병합 → 다음 브랜치는 병합된 `main`에서 시작.
 - **커밋 메시지**: 한국어. 첫 줄 `feat:` / `fix:` / `refactor:` / `docs:` / `chore:` + 요약, 본문에 **무엇을, 왜**(문제 → 원인 → 해결). 한 커밋에는 한 가지 일만.
+- Windows PowerShell 5.1에서 `git commit -m`에 큰따옴표가 든 메시지를 넘기면 따옴표가 사라지거나 커밋이 깨진다.
+  메시지는 UTF-8 파일로 써서 `git commit -F <파일>`로 넘긴다.
 - 코드 주석도 한국어, 신입이 읽고 이해할 수 있게 "왜 이렇게 하는지"를 적는다.
 - 각 작업이 끝나면 README의 **개발 기록**에 버전별로 문제 → 원인 → 해결을 남긴다 (v0.7은 release 브랜치에서 한 번에).
 
@@ -63,14 +65,14 @@
 |---|---|---|
 | 1 | `fix/detail-map-scroll` | ✅ main에 병합됨 — 상세 지도 고정(스크롤 캡처 문제), 전체 화면 지도 `MapActivity`, OSM 출처 표시 |
 | 2 | `feat/save-image` | ✅ main에 병합됨 — `ViewCapture`, `ImageSaver`(Pictures/RunBeat), 상세 화면 "이미지로 저장" |
-| 3 | `feat/theme` | 🔄 **①②③ 완료, main 병합 대기** (지금 체크아웃된 브랜치) |
-| 4 | `feat/settings` | ⏳ |
+| 3 | `feat/theme` | ✅ main에 병합됨 — 라이트/다크 팔레트, `ThemeMode`, `BaseActivity` 테마 적용 |
+| 4 | `feat/settings` | 🔄 **①~⑤ 커밋 완료, 실기기 확인 후 main 병합** (지금 체크아웃된 브랜치) |
 | 5 | `feat/sound-settings` | ⏳ |
 | 6 | `feat/countdown` | ⏳ |
 | 7 | `feat/backup` | ⏳ |
 | 8 | `chore/release-0.7` | ⏳ |
 
-### 3. feat/theme (진행 중)
+### 3. feat/theme (완료)
 - ✅ ① `refactor:` 하드코딩 색 → 색 리소스 (on_brand, on_warn, field, block_bg, chart_avg, ripple, ripple_strong, ripple_danger)
 - ✅ ② `feat:` 라이트 팔레트(`values/`) + 다크(`values-night/`), `Base.AppTheme`(라이트: Theme.Material.Light + 시스템 바 아이콘 어둡게), WCAG 대비 점검 완료
 - ✅ ③ `feat:` 테마 적용 로직 — `ThemeMode`(+ `ThemeModeTest` 9개, 저장소 첫 JUnit 테스트) / `BaseActivity.attachBaseContext`·`onResume` / `fix:` API 29 이하 상태바 플래그
@@ -82,8 +84,10 @@
   - 버그 주의: `BaseActivity.onCreate()`의 API 29 이하 분기에서 `setSystemUiVisibility(...)`가 테마의 `windowLightStatusBar` 플래그를 지워버린다 → 기존 값에 `|`로 더해야 라이트 테마에서 상태바 아이콘이 보인다.
   - 라이트 테마에서 확인할 곳: 홈, 코스 고르기/편집, 기록 목록/상세, 전체 화면 지도, 다이얼로그(AlertDialog), NumberPicker, Switch.
 
-### 4. feat/settings
-- ① 설정값을 한 곳에서 읽고 쓰는 `Settings` 클래스 (기존 키 유지: `"weight"`, `"autoPause"`, `"bpm"`, `"mode"`, `"courseId"`, `"theme"` / prefs 이름 `"runbeat"` = `MainActivity.PREFS`)
+### 4. feat/settings (커밋 완료, 실기기 확인 대기)
+- 클래스 이름은 `AppSettings`로 정했다(`android.provider.Settings`와 겹치지 않게). `AppSettings.PREFS`가 예전 `MainActivity.PREFS`.
+- 러닝 중에는 홈의 ⚙️ 버튼을 숨긴다.
+- ① 설정값을 한 곳에서 읽고 쓰는 설정 클래스 (기존 키 유지: `"weight"`, `"autoPause"`, `"bpm"`, `"mode"`, `"courseId"`, `"theme"` / prefs 이름 `"runbeat"` = `MainActivity.PREFS`)
 - ② `SettingsActivity` + 홈 오른쪽 위 ⚙️ 버튼
 - ③ 체중·자동 일시정지·배터리 최적화 해제를 홈 → 설정으로 이동. 자동 일시정지가 켜져 있으면 홈에 작은 표시를 남긴다(대회 전에 끄는 걸 잊지 않게).
 - ④ 테마 선택: 시스템 따라가기 / 라이트 / 다크
