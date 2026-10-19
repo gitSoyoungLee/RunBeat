@@ -63,7 +63,7 @@
 |---|---|---|
 | 1 | `fix/detail-map-scroll` | ✅ main에 병합됨 — 상세 지도 고정(스크롤 캡처 문제), 전체 화면 지도 `MapActivity`, OSM 출처 표시 |
 | 2 | `feat/save-image` | ✅ main에 병합됨 — `ViewCapture`, `ImageSaver`(Pictures/RunBeat), 상세 화면 "이미지로 저장" |
-| 3 | `feat/theme` | 🔄 **진행 중 (지금 체크아웃된 브랜치)** — ①② 완료, **③부터** |
+| 3 | `feat/theme` | 🔄 **①②③ 완료, main 병합 대기** (지금 체크아웃된 브랜치) |
 | 4 | `feat/settings` | ⏳ |
 | 5 | `feat/sound-settings` | ⏳ |
 | 6 | `feat/countdown` | ⏳ |
@@ -73,7 +73,8 @@
 ### 3. feat/theme (진행 중)
 - ✅ ① `refactor:` 하드코딩 색 → 색 리소스 (on_brand, on_warn, field, block_bg, chart_avg, ripple, ripple_strong, ripple_danger)
 - ✅ ② `feat:` 라이트 팔레트(`values/`) + 다크(`values-night/`), `Base.AppTheme`(라이트: Theme.Material.Light + 시스템 바 아이콘 어둡게), WCAG 대비 점검 완료
-- ⏳ ③ `feat:` 테마 적용 로직
+- ✅ ③ `feat:` 테마 적용 로직 — `ThemeMode`(+ `ThemeModeTest` 9개, 저장소 첫 JUnit 테스트) / `BaseActivity.attachBaseContext`·`onResume` / `fix:` API 29 이하 상태바 플래그
+  - 테마를 고르는 UI는 아직 없다(④ feat/settings). 그래서 지금은 항상 기본값 다크로 보인다.
   - 설정값: SharedPreferences `"runbeat"`의 `"theme"` = `"system"` / `"light"` / `"dark"`. **기본값은 `"dark"`** (기존 사용자 화면이 갑자기 바뀌지 않게).
   - `BaseActivity.attachBaseContext()`에서 `Configuration.uiMode`의 NIGHT 비트를 설정값으로 덮어쓴 Context로 교체 (`createConfigurationContext`). `"system"`이면 그대로.
   - 모드 → uiMode 계산은 **순수 자바 클래스(예: `ThemeMode`)로 분리해서 단위 테스트**.
