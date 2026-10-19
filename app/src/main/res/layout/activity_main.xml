@@ -14,7 +14,7 @@
         android:paddingEnd="16dp"
         android:paddingBottom="24dp">
 
-        <!-- 헤더: 앱 이름 + GPS 상태 -->
+        <!-- 헤더: 앱 이름 + GPS 상태 + 설정 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -45,6 +45,18 @@
                 android:text="대기 중"
                 android:textColor="@color/sub"
                 android:textSize="13sp" />
+
+            <!-- 손가락으로 누르기 쉽게 48dp (안드로이드 권장 최소 터치 크기) -->
+            <ImageView
+                android:id="@+id/btnSettings"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="-8dp"
+                android:background="@drawable/bg_icon_btn"
+                android:contentDescription="설정"
+                android:scaleType="center"
+                android:src="@drawable/ic_settings" />
         </LinearLayout>
 
         <!-- 모드 선택 (러닝 중에는 숨김) -->

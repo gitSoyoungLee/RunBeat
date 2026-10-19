@@ -34,7 +34,7 @@ public class MainActivity extends BaseActivity {
     private TextView tvTime, tvDistance, tvPace, tvAvgPace, tvCadence, tvKcal, tvSteps, tvGps, tvBpm;
     private TextView tvCourseName, tvCourseSummary, tvSegLabel, tvCourseProgress, tvSegRemain, tvNext;
     private TextView tvPaused, tvMetroNote, btnModeFree, btnModeCourse, btnStartStop, btnPause, btnSkip;
-    private View modeRow, cardCourse, cardInterval, cardSettings, runControls;
+    private View modeRow, cardCourse, cardInterval, cardSettings, runControls, btnSettings;
     private ProgressBar progressCourse;
     private TextView[] bpmChips;
 
@@ -151,6 +151,9 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.btnHistory).setOnClickListener(v ->
                 startActivity(new Intent(this, HistoryActivity.class)));
         findViewById(R.id.btnBattery).setOnClickListener(v -> requestIgnoreBattery());
+        btnSettings = findViewById(R.id.btnSettings);
+        btnSettings.setOnClickListener(v ->
+                startActivity(new Intent(this, SettingsActivity.class)));
 
         // 앱을 처음 열 때 권한을 미리 받아둔다 (대회 당일 출발선에서 당황하지 않게)
         List<String> missing = missingPermissions();
@@ -198,6 +201,8 @@ public class MainActivity extends BaseActivity {
         cardCourse.setVisibility(!running && courseModeSelected ? View.VISIBLE : View.GONE);
         cardInterval.setVisibility(courseRunning ? View.VISIBLE : View.GONE);
         cardSettings.setVisibility(running ? View.GONE : View.VISIBLE);
+        // 러닝 중에는 설정을 못 바꾸게 숨긴다 (체중이 바뀌면 칼로리 계산이 중간에 달라지는 등)
+        btnSettings.setVisibility(running ? View.GONE : View.VISIBLE);
         btnStartStop.setVisibility(running ? View.GONE : View.VISIBLE);
         runControls.setVisibility(running ? View.VISIBLE : View.GONE);
         btnSkip.setVisibility(courseRunning && !RunState.courseDone ? View.VISIBLE : View.GONE);

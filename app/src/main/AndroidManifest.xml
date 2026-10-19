@@ -68,6 +68,12 @@
             android:label="코스 편집"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false"
+            android:label="설정"
+            android:windowSoftInputMode="adjustResize" />
+
         <service
             android:name=".RunService"
             android:exported="false"
