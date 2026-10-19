@@ -1,6 +1,7 @@
 package com.runbeat.app;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -62,6 +63,18 @@ public class SettingsActivity extends BaseActivity {
         // 배터리 최적화 해제
         tvBatteryState = findViewById(R.id.tvBatteryState);
         findViewById(R.id.rowBattery).setOnClickListener(v -> requestIgnoreBattery());
+
+        // 앱 정보: build.gradle.kts의 versionName을 그대로 보여 준다 (코드에 "0.7"을 따로 적지 않게)
+        TextView tvVersion = findViewById(R.id.tvVersion);
+        tvVersion.setText(versionName());
+    }
+
+    private String versionName() {
+        try {
+            return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            return "-"; // 자기 자신은 항상 설치돼 있으니 실제로는 일어나지 않는다
+        }
     }
 
     /**
