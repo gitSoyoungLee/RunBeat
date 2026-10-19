@@ -12,4 +12,13 @@
     <color name="good">#3DDC97</color>
     <color name="warn">#FFC145</color>
     <color name="chart">#5B8DEF</color>
+    <!-- 아래는 코드·드로어블에 직접 박혀 있던 색을 이름으로 옮긴 것 -->
+    <color name="on_brand">#FFFFFF</color>        <!-- 주황/빨강 버튼 위 글자 -->
+    <color name="on_warn">#2A1E00</color>         <!-- 노란 일시정지 배너 위 글자 -->
+    <color name="field">#24272E</color>           <!-- 입력칸·칩 배경 -->
+    <color name="block_bg">#14FF6B2C</color>      <!-- 반복 블록 배경 -->
+    <color name="chart_avg">#66F5F5F7</color>     <!-- 차트 평균 점선 -->
+    <color name="ripple">#22FFFFFF</color>        <!-- 눌렀을 때 물결 -->
+    <color name="ripple_strong">#44FFFFFF</color>
+    <color name="ripple_danger">#33FF4D4F</color>
 </resources>

@@ -217,7 +217,7 @@
             android:gravity="center"
             android:padding="12dp"
             android:text="일시정지됨"
-            android:textColor="#2A1E00"
+            android:textColor="@color/on_warn"
             android:textSize="15sp" />
 
         <!-- 메인 카드: 시간 + 거리 -->
@@ -513,7 +513,7 @@
             android:fontFamily="sans-serif-black"
             android:gravity="center"
             android:text="시작"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/on_brand"
             android:textSize="24sp" />
 
         <!-- 러닝 중 버튼: 일시정지/재개 · 건너뛰기(코스) · 종료 -->
@@ -537,7 +537,7 @@
                 android:fontFamily="sans-serif-black"
                 android:gravity="center"
                 android:text="일시정지"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/on_brand"
                 android:textSize="20sp" />
 
             <TextView
@@ -561,7 +561,7 @@
                 android:fontFamily="sans-serif-black"
                 android:gravity="center"
                 android:text="종료"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/on_brand"
                 android:textSize="20sp" />
         </LinearLayout>
 
