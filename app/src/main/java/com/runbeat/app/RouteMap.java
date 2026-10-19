@@ -8,6 +8,7 @@ import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.CopyrightOverlay;
 import org.osmdroid.views.overlay.Polyline;
 
 import java.util.ArrayList;
@@ -34,6 +35,11 @@ public final class RouteMap {
         map.getZoomController().setVisibility(interactive
                 ? CustomZoomButtonsController.Visibility.SHOW_AND_FADEOUT
                 : CustomZoomButtonsController.Visibility.NEVER);
+
+        // OpenStreetMap 지도는 이용 조건상 출처 표시가 필수: 지도 구석에 "© OpenStreetMap contributors"
+        CopyrightOverlay copyright = new CopyrightOverlay(c);
+        copyright.setTextSize(10);
+        map.getOverlays().add(copyright);
 
         List<GeoPoint> pts = new ArrayList<>();
         for (int i = 0; i + 1 < route.length; i += 2) {
