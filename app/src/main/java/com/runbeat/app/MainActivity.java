@@ -6,19 +6,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.PowerManager;
 import android.provider.Settings;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,13 +22,14 @@ import java.util.Locale;
 
 public class MainActivity extends BaseActivity {
 
-   private static final int REQ_PERMS = 1;
+    private static final int REQ_PERMS = 1;
     private static final int[] CHIP_BPMS = {0, 160, 170, 180};
 
     private TextView tvTime, tvDistance, tvPace, tvAvgPace, tvCadence, tvKcal, tvSteps, tvGps, tvBpm;
     private TextView tvCourseName, tvCourseSummary, tvSegLabel, tvCourseProgress, tvSegRemain, tvNext;
     private TextView tvPaused, tvMetroNote, btnModeFree, btnModeCourse, btnStartStop, btnPause, btnSkip;
-    private View modeRow, cardCourse, cardInterval, cardSettings, runControls, btnSettings;
+    private TextView tvAutoPauseOn;
+    private View modeRow, cardCourse, cardInterval, runControls, btnSettings;
     private ProgressBar progressCourse;
     private TextView[] bpmChips;
 
@@ -88,7 +83,8 @@ public class MainActivity extends BaseActivity {
         modeRow = findViewById(R.id.modeRow);
         cardCourse = findViewById(R.id.cardCourse);
         cardInterval = findViewById(R.id.cardInterval);
-        cardSettings = findViewById(R.id.cardSettings);
+        tvAutoPauseOn = findViewById(R.id.tvAutoPauseOn);
+        btnSettings = findViewById(R.id.btnSettings);
         runControls = findViewById(R.id.runControls);
         progressCourse = findViewById(R.id.progressCourse);
         bpmChips = new TextView[]{findViewById(R.id.btnBpmOff), findViewById(R.id.btnBpm160),
@@ -118,28 +114,9 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.btnBpmPlus5).setOnClickListener(v -> adjustBpm(5));
         updateBpmLabel();
 
-        // 자동 일시정지 스위치
-        Switch sw = findViewById(R.id.switchAutoPause);
-        sw.setChecked(RunState.autoPauseEnabled);
-        sw.setOnCheckedChangeListener((b, checked) -> {
-            RunState.autoPauseEnabled = checked;
-            settings.setAutoPause(checked);
-        });
-
-        // 체중
-        EditText etWeight = findViewById(R.id.etWeight);
-        etWeight.setText(String.format(Locale.US, "%.1f", RunState.weightKg));
-        etWeight.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) { }
-            @Override public void onTextChanged(CharSequence s, int a, int b, int c) { }
-            @Override
-            public void afterTextChanged(Editable s) {
-                try {
-                    float w = Float.parseFloat(s.toString());
-                    if (settings.setWeightKg(w)) RunState.weightKg = w; // 범위 밖이면 저장 안 함
-                } catch (NumberFormatException ignored) { }
-            }
-        });
+        // 자동 일시정지·체중·배터리 설정은 설정 화면(SettingsActivity)으로 옮겼다
+        Intent openSettings = new Intent(this, SettingsActivity.class);
+        tvAutoPauseOn.setOnClickListener(v -> startActivity(openSettings));
 
         // 시작 / 러닝 중 버튼
         btnStartStop.setOnClickListener(v -> tryStart());
@@ -150,10 +127,7 @@ public class MainActivity extends BaseActivity {
 
         findViewById(R.id.btnHistory).setOnClickListener(v ->
                 startActivity(new Intent(this, HistoryActivity.class)));
-        findViewById(R.id.btnBattery).setOnClickListener(v -> requestIgnoreBattery());
-        btnSettings = findViewById(R.id.btnSettings);
-        btnSettings.setOnClickListener(v ->
-                startActivity(new Intent(this, SettingsActivity.class)));
+        btnSettings.setOnClickListener(v -> startActivity(openSettings));
 
         // 앱을 처음 열 때 권한을 미리 받아둔다 (대회 당일 출발선에서 당황하지 않게)
         List<String> missing = missingPermissions();
@@ -200,9 +174,10 @@ public class MainActivity extends BaseActivity {
         btnModeCourse.setSelected(courseModeSelected);
         cardCourse.setVisibility(!running && courseModeSelected ? View.VISIBLE : View.GONE);
         cardInterval.setVisibility(courseRunning ? View.VISIBLE : View.GONE);
-        cardSettings.setVisibility(running ? View.GONE : View.VISIBLE);
         // 러닝 중에는 설정을 못 바꾸게 숨긴다 (체중이 바뀌면 칼로리 계산이 중간에 달라지는 등)
         btnSettings.setVisibility(running ? View.GONE : View.VISIBLE);
+        // 설정 화면에서 바꾸고 돌아오면 0.5초마다 도는 refresh()가 바로 반영해 준다
+        tvAutoPauseOn.setVisibility(!running && RunState.autoPauseEnabled ? View.VISIBLE : View.GONE);
         btnStartStop.setVisibility(running ? View.GONE : View.VISIBLE);
         runControls.setVisibility(running ? View.VISIBLE : View.GONE);
         btnSkip.setVisibility(courseRunning && !RunState.courseDone ? View.VISIBLE : View.GONE);
@@ -355,21 +330,6 @@ public class MainActivity extends BaseActivity {
             startRun();
         } else {
             Toast.makeText(this, "정확한 위치 권한이 있어야 거리를 잴 수 있어요", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void requestIgnoreBattery() {
-        PowerManager pm = getSystemService(PowerManager.class);
-        if (pm.isIgnoringBatteryOptimizations(getPackageName())) {
-            Toast.makeText(this, "이미 해제되어 있어요 👍", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        try {
-            Intent i = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
-                    Uri.parse("package:" + getPackageName()));
-            startActivity(i);
-        } catch (Exception e) {
-            startActivity(new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS));
         }
     }
 }
