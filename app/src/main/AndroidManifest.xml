@@ -49,6 +49,11 @@
             android:label="러닝 상세" />
 
         <activity
+            android:name=".MapActivity"
+            android:exported="false"
+            android:label="경로 지도" />
+
+        <activity
             android:name=".CourseListActivity"
             android:exported="false"
             android:label="코스 고르기" />
