@@ -56,9 +56,34 @@ public class SettingsActivity extends BaseActivity {
             }
         });
 
+        // 테마
+        setupThemeChips();
+
         // 배터리 최적화 해제
         tvBatteryState = findViewById(R.id.tvBatteryState);
         findViewById(R.id.rowBattery).setOnClickListener(v -> requestIgnoreBattery());
+    }
+
+    /**
+     * 테마 칩 3개. 지금 설정과 같은 칩만 selected(주황색)로 보인다.
+     *
+     * 누르면 저장하고 recreate()로 이 화면을 바로 다시 그린다.
+     * 뒤에 있는 홈 같은 화면은 돌아갈 때 BaseActivity.onResume()이 알아서 다시 그린다.
+     */
+    private void setupThemeChips() {
+        String[] modes = {ThemeMode.SYSTEM, ThemeMode.LIGHT, ThemeMode.DARK};
+        int[] ids = {R.id.btnThemeSystem, R.id.btnThemeLight, R.id.btnThemeDark};
+        String current = settings.theme();
+        for (int i = 0; i < ids.length; i++) {
+            String mode = modes[i];
+            TextView chip = findViewById(ids[i]);
+            chip.setSelected(mode.equals(current));
+            chip.setOnClickListener(v -> {
+                if (mode.equals(settings.theme())) return; // 같은 걸 또 누르면 아무것도 안 함
+                settings.setTheme(mode);
+                recreate();
+            });
+        }
     }
 
     @Override
