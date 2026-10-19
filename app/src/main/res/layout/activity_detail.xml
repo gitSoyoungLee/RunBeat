@@ -4,7 +4,9 @@
     android:layout_height="match_parent"
     android:background="@color/bg">
 
+    <!-- detailContent: "이미지로 저장" 때 이 레이아웃을 통째로 그린다 -->
     <LinearLayout
+        android:id="@+id/detailContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -133,19 +135,40 @@
                 android:orientation="vertical" />
         </LinearLayout>
 
-        <!-- 삭제 -->
-        <TextView
-            android:id="@+id/btnDelete"
+        <!-- 버튼 영역: 이미지로 저장할 때는 이 영역 위까지만 그린다 -->
+        <LinearLayout
+            android:id="@+id/actions"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:background="@drawable/bg_btn_danger"
-            android:clickable="true"
-            android:focusable="true"
-            android:fontFamily="sans-serif-medium"
-            android:gravity="center"
-            android:text="이 기록 삭제"
-            android:textColor="@color/stop"
-            android:textSize="15sp" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/btnSaveImage"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_btn_start"
+                android:clickable="true"
+                android:focusable="true"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:text="이미지로 저장"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/btnDelete"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_btn_danger"
+                android:clickable="true"
+                android:focusable="true"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:text="이 기록 삭제"
+                android:textColor="@color/stop"
+                android:textSize="15sp" />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>
