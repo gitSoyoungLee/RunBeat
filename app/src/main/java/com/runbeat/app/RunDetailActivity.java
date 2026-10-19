@@ -1,6 +1,5 @@
 package com.runbeat.app;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.graphics.Outline;
 import android.graphics.Typeface;
@@ -128,7 +127,6 @@ public class RunDetailActivity extends BaseActivity {
 
     // ───────────────────────── 지도 ─────────────────────────
 
-    @SuppressLint("ClickableViewAccessibility")
     private void setupMap(RunRecord r) {
         // 지도 모서리를 카드처럼 둥글게 자르기
         FrameLayout frame = findViewById(R.id.mapFrame);
@@ -142,12 +140,13 @@ public class RunDetailActivity extends BaseActivity {
 
         map = findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
-        map.setMultiTouchControls(true);
-        // 스크롤 화면 안의 지도: 지도를 만질 때는 바깥 스크롤이 가로채지 않게
-        map.setOnTouchListener((v, e) -> {
-            v.getParent().requestDisallowInterceptTouchEvent(true);
-            return false;
-        });
+        // 상세 화면의 지도는 "그림"처럼 고정한다.
+        // 예전에는 지도가 손가락을 독차지(requestDisallowInterceptTouchEvent)해서
+        // 갤럭시 스크롤 캡처가 페이지 대신 지도를 움직이는 문제가 있었다.
+        // 이제 지도 위에 투명한 덮개(mapCover)가 터치를 받으므로, 위아래 드래그는 항상 페이지가 스크롤된다.
+        map.setMultiTouchControls(false);
+        map.getZoomController().setVisibility(
+                org.osmdroid.views.CustomZoomButtonsController.Visibility.NEVER);
 
         List<GeoPoint> pts = new ArrayList<>();
         for (int i = 0; i + 1 < r.route.length; i += 2) {
