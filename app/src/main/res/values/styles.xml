@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="android:Theme.Material">
+    <!-- 바탕(Base.AppTheme)이 라이트/다크에 따라 바뀐다 → theme_base.xml -->
+    <style name="AppTheme" parent="@style/Base.AppTheme">
         <item name="android:colorPrimary">@color/bg</item>
         <item name="android:colorPrimaryDark">@color/bg</item>
         <item name="android:colorAccent">@color/brand</item>
